@@ -15,7 +15,8 @@ public class AutomaticoService {
     private final LeitorDeIndicesClient leitorDeIndicesClient;
 
     public void teste() {
-        final ResponseEntity<List<CotacaoAtivoDto>> response = leitorDeIndicesClient.find("TSLA34",
+        final ResponseEntity<List<CotacaoAtivoDto>> response = leitorDeIndicesClient.find(
+                "TSLA34",
                 "01/10/2020",
                 "01/11/2020");
         return;
