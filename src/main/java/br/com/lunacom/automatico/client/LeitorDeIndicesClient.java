@@ -1,6 +1,6 @@
 package br.com.lunacom.automatico.client;
 
-import br.com.lunacom.automatico.domain.dto.CotacaoAtivoDto;
+import br.com.lunacom.automatico.domain.dto.AtivoResumoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Component
-@FeignClient(name = "leitor-de-indices", url = "localhost:8081", path = "/cotacao")
+@FeignClient(name = "leitor-de-indices", url = "localhost:8081")
 //@FeignClient(name = "hr-worker", path = "/workers")
 public interface LeitorDeIndicesClient {
 
-    @RequestMapping(method= RequestMethod.GET)
-    ResponseEntity<List<CotacaoAtivoDto>> find(@RequestParam("ativo") String ativo,
-                                               @RequestParam("datainicial") String datainicial,
-                                               @RequestParam("datafinal") String datafinal);
+    @RequestMapping(method= RequestMethod.GET, path = "/ativo/todos-com-cotacao")
+    ResponseEntity<List<AtivoResumoDto>> findTodosComCotacao();
+
+    @RequestMapping(method= RequestMethod.GET, path = "/scraping/historico/ativos/")
+    ResponseEntity<Void> scrapingHistoricoAtivos(@RequestParam("ativos") List<String> listaAtivos,
+                                                                 @RequestParam("inicio") String inicio,
+                                                                 @RequestParam("invisivel") Boolean invisivel);
 }
