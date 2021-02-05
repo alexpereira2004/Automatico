@@ -26,7 +26,9 @@ public class ScheduledTask {
         List<String> ativos = Arrays.asList("ABCB4");
         String dataReferencia = "19/11/2019";
         boolean invisivel = false;
-        final ResponseEntity<Void> responseEntity = leitorDeIndicesClient.scrapingHistoricoAtivos(ativos, dataReferencia, invisivel);
+        String site = "advfn";
+        final ResponseEntity<Void> responseEntity = leitorDeIndicesClient.scrapingHistoricoAtivos
+                (ativos, dataReferencia, invisivel, site);
         log.info("Scraping retornou código {} as {}",
                 responseEntity.getStatusCode().value(), dateFormat.format(new Date()));
     }
