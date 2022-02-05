@@ -50,6 +50,5 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                     }
                 }
         );
-
     }
 }
