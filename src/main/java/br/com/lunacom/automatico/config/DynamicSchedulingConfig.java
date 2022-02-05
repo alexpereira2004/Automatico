@@ -1,4 +1,4 @@
-package br.com.lunacom.automatico.task;
+package br.com.lunacom.automatico.config;
 
 import br.com.lunacom.automatico.service.AgendamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
