@@ -11,11 +11,14 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-public class DiasUteis implements Serializable {
+public class DiaUtil implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private LocalDate dia;
+    private Integer  dia_ano;
+    private Integer  semana;
     private Integer tipo;
+    private String feriado;
 }

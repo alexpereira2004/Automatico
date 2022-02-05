@@ -1,6 +1,6 @@
 package br.com.lunacom.automatico.resource;
 
-import br.com.lunacom.automatico.domain.entity.DiasUteis;
+import br.com.lunacom.automatico.domain.entity.DiaUtil;
 import br.com.lunacom.automatico.service.DiaUtilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class DiaUtilResource {
 
     @PostMapping(value = "/v1/parse-from-dias-uteis-com")
     public ResponseEntity<Void> parseFromDiasUteisCom(@RequestBody @Valid @NotNull String request) {
-        List<DiasUteis> list = service.parseFromDiasUteisCom(request);
+        List<DiaUtil> list = service.parseFromDiasUteisCom(request);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 }
