@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -21,5 +22,6 @@ public class Ativo implements Serializable {
     private String codigo;
     private String nome;
     private LocalDateTime ultimaAtualizacao;
-    private Boolean seguindo;
+    @Column(length=1)
+    private String seguindo;
 }
