@@ -1,6 +1,7 @@
 package br.com.lunacom.automatico.config;
 
 import br.com.lunacom.automatico.service.AgendamentoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
+@Slf4j
 public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
     @Autowired
@@ -43,9 +45,11 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                     public Date nextExecutionTime(TriggerContext context) {
                         Optional<Date> lastCompletionTime =
                                 Optional.ofNullable(context.lastCompletionTime());
-                        Instant nextExecutionTime =
-                                lastCompletionTime.orElseGet(Date::new).toInstant()
-                                        .plusMillis(agendamentoService.definirTempoParaProximoDisparo());
+//                        Instant nextExecutionTime =
+//                                lastCompletionTime.orElseGet(Date::new).toInstant()
+//                                        .plusMillis(agendamentoService.definirTempoParaProximoDisparo());
+                        Instant nextExecutionTime = agendamentoService.definirTempoParaProximoDisparo(lastCompletionTime);
+                        log.info(">>>>> Próximo processamento automático será realizado em {}", nextExecutionTime);
                         return Date.from(nextExecutionTime);
                     }
                 }
