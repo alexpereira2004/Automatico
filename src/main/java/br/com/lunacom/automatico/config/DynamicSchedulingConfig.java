@@ -12,6 +12,8 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -45,8 +47,9 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                     public Date nextExecutionTime(TriggerContext context) {
                         Optional<Date> lastCompletionTime =
                                 Optional.ofNullable(context.lastCompletionTime());
-                        Instant nextExecutionTime = agendamentoService.definirTempoParaProximoDisparo(lastCompletionTime);
-                        log.info(">>>>> Próximo processamento automático será realizado em {}", nextExecutionTime);
+                        final LocalDateTime localDateTime = agendamentoService.definirTempoParaProximoDisparo(lastCompletionTime);
+                        log.info(">>>>> Próximo processamento automático será realizado em {}", localDateTime);
+                        final Instant nextExecutionTime = localDateTime.toInstant(ZoneOffset.of("-03:00"));
                         return Date.from(nextExecutionTime);
                     }
                 }

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 
@@ -28,13 +30,13 @@ public class AgendamentoService {
         return 60000L;
     }
 
-    public Instant definirTempoParaProximoDisparo(Optional<Date> lastCompletionTime) {
+    public LocalDateTime definirTempoParaProximoDisparo(Optional<Date> lastCompletionTime) {
         LocalDateTime ultimaExecucao = parseDataUltimaExecucao(lastCompletionTime);
         Agenda agenda = getAgendaNoBancoDeDados();
         LocalDateTime proximaExecucaoCalculada = calcularProximaExecucao(ultimaExecucao, agenda);
         proximaExecucaoCalculada = garantirQueProximaExecucaoRespeiteAgenda
                 (ultimaExecucao, agenda, proximaExecucaoCalculada);
-        return proximaExecucaoCalculada.toInstant(ZoneOffset.of("-03:00"));
+        return proximaExecucaoCalculada;
     }
 
     private LocalDateTime parseDataUltimaExecucao(Optional<Date> lastCompletionTime) {
@@ -60,10 +62,13 @@ public class AgendamentoService {
     private LocalDateTime garantirQueProximaExecucaoRespeiteAgenda(LocalDateTime ultimaExecucao,
                                                                    Agenda agenda,
                                                                    LocalDateTime proximaExecucaoCalculada) {
-        if (proximaExecucaoCalculada.toLocalTime().isAfter(agenda.getFim()) ||
-                proximaExecucaoCalculada.toLocalTime().isBefore(agenda.getInicio())) {
+        if (proximaExecucaoCalculada.toLocalTime().isAfter(agenda.getFim())) {
             LocalDate proximoDiaUtil = dataUtil.proximoDiaUtil(ultimaExecucao.toLocalDate());
             proximaExecucaoCalculada = LocalDateTime.of(proximoDiaUtil, agenda.getInicio());
+        }
+
+        if (proximaExecucaoCalculada.toLocalTime().isBefore(agenda.getInicio())) {
+            proximaExecucaoCalculada = LocalDateTime.of(proximaExecucaoCalculada.toLocalDate(), agenda.getInicio());
         }
         return proximaExecucaoCalculada;
     }
