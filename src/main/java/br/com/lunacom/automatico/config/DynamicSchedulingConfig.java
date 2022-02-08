@@ -45,9 +45,6 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                     public Date nextExecutionTime(TriggerContext context) {
                         Optional<Date> lastCompletionTime =
                                 Optional.ofNullable(context.lastCompletionTime());
-//                        Instant nextExecutionTime =
-//                                lastCompletionTime.orElseGet(Date::new).toInstant()
-//                                        .plusMillis(agendamentoService.definirTempoParaProximoDisparo());
                         Instant nextExecutionTime = agendamentoService.definirTempoParaProximoDisparo(lastCompletionTime);
                         log.info(">>>>> Próximo processamento automático será realizado em {}", nextExecutionTime);
                         return Date.from(nextExecutionTime);
