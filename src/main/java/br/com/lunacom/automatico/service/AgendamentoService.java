@@ -32,7 +32,7 @@ public class AgendamentoService {
         LocalDateTime ultimaExecucao = parseDataUltimaExecucao(lastCompletionTime);
         Agenda agenda = getAgendaNoBancoDeDados();
         LocalDateTime proximaExecucaoCalculada = calcularProximaExecucao(ultimaExecucao, agenda);
-        proximaExecucaoCalculada = calcularProximaExecucaoQuandoAtualForMaiorQueDataAgenda
+        proximaExecucaoCalculada = garantirQueProximaExecucaoRespeiteAgenda
                 (ultimaExecucao, agenda, proximaExecucaoCalculada);
         return proximaExecucaoCalculada.toInstant(ZoneOffset.of("-03:00"));
     }
@@ -57,10 +57,11 @@ public class AgendamentoService {
         return proximaExecucaoCalculada;
     }
 
-    private LocalDateTime calcularProximaExecucaoQuandoAtualForMaiorQueDataAgenda(LocalDateTime ultimaExecucao,
-                                                                                  Agenda agenda,
-                                                                                  LocalDateTime proximaExecucaoCalculada) {
-        if (proximaExecucaoCalculada.toLocalTime().isAfter(agenda.getFim())) {
+    private LocalDateTime garantirQueProximaExecucaoRespeiteAgenda(LocalDateTime ultimaExecucao,
+                                                                   Agenda agenda,
+                                                                   LocalDateTime proximaExecucaoCalculada) {
+        if (proximaExecucaoCalculada.toLocalTime().isAfter(agenda.getFim()) ||
+                proximaExecucaoCalculada.toLocalTime().isBefore(agenda.getInicio())) {
             LocalDate proximoDiaUtil = dataUtil.proximoDiaUtil(ultimaExecucao.toLocalDate());
             proximaExecucaoCalculada = LocalDateTime.of(proximoDiaUtil, agenda.getInicio());
         }
