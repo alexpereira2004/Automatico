@@ -17,6 +17,4 @@ public enum DiaSemanaEnum {
 
     Integer codigo;
     String descricao;
-
-
 }

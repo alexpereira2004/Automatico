@@ -1,8 +1,12 @@
 package br.com.lunacom.automatico.service;
 
+import br.com.lunacom.automatico.amq.producer.ScrapingHistoricoIncidesProducer;
 import br.com.lunacom.automatico.domain.entity.Agenda;
+import br.com.lunacom.automatico.domain.entity.Ativo;
 import br.com.lunacom.automatico.enumeration.DiaSemanaEnum;
+import br.com.lunacom.automatico.enumeration.SeguindoEnum;
 import br.com.lunacom.automatico.repository.AgendaRepository;
+import br.com.lunacom.automatico.repository.AtivoRepository;
 import br.com.lunacom.automatico.util.DataUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +16,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -20,14 +27,19 @@ import java.util.Optional;
 public class AgendamentoService {
 
     private final AgendaRepository repository;
+    private final AtivoRepository ativoRepository;
     private final DataUtil dataUtil;
+    private final ScrapingHistoricoIncidesProducer producer;
+
 
     public void dispararBuscaDadosCotacoes() {
-        log.info("LOG Disparado com sucesso");
-    }
+        List<Ativo> list = ativoRepository.findAllBySeguindo(SeguindoEnum.SIM.getCodigo());
+        List<Ativo> ativosSemDadosNoDia = list.stream()
+                .filter(ativo ->Objects.isNull(ativo.getUltimaAtualizacao())
+                        || ativo.getUltimaAtualizacao().toLocalDate().equals(DataUtil.dataAgora()))
+                .collect(Collectors.toList());
 
-    public long definirTempoParaProximoDisparo() {
-        return 60000L;
+        ativosSemDadosNoDia.forEach(a -> producer.produce(a.getCodigo()));
     }
 
     public LocalDateTime definirTempoParaProximoDisparo(Optional<Date> lastCompletionTime) {

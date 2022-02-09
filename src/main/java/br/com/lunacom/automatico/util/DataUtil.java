@@ -51,7 +51,7 @@ public class DataUtil {
                 .orElseThrow(() -> new IllegalArgumentException(("Agenda não existe")));
     }
 
-    public LocalDate dataAgora() {
+    public static LocalDate dataAgora() {
         return LocalDate.now();
     }
 
