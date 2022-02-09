@@ -1,5 +1,6 @@
 package br.com.lunacom.automatico.amq.producer;
 
+import br.com.lunacom.automatico.domain.message.SolicitacaoScrapingDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class ScrapingHistoricoIncidesProducer {
     @Value("${rabbitmq.routingkey}")
     private String routingkey;
 
-    public void produce(String data){
+    public void produce(SolicitacaoScrapingDto data){
         amqpTemplate.convertAndSend(exchange, routingkey, data);
         log.info("Send msg = " + data);
     }

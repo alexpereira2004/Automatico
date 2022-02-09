@@ -3,6 +3,7 @@ package br.com.lunacom.automatico.service;
 import br.com.lunacom.automatico.amq.producer.ScrapingHistoricoIncidesProducer;
 import br.com.lunacom.automatico.domain.entity.Agenda;
 import br.com.lunacom.automatico.domain.entity.Ativo;
+import br.com.lunacom.automatico.domain.message.SolicitacaoScrapingDto;
 import br.com.lunacom.automatico.enumeration.DiaSemanaEnum;
 import br.com.lunacom.automatico.enumeration.SeguindoEnum;
 import br.com.lunacom.automatico.repository.AgendaRepository;
@@ -39,7 +40,7 @@ public class AgendamentoService {
                         || ativo.getUltimaAtualizacao().toLocalDate().equals(DataUtil.dataAgora()))
                 .collect(Collectors.toList());
 
-        ativosSemDadosNoDia.forEach(a -> producer.produce(a.getCodigo()));
+        ativosSemDadosNoDia.forEach(a -> producer.produce(new SolicitacaoScrapingDto(a.getCodigo())));
     }
 
     public LocalDateTime definirTempoParaProximoDisparo(Optional<Date> lastCompletionTime) {
