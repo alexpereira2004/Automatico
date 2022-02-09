@@ -1,6 +1,6 @@
 package br.com.lunacom.automatico.service;
 
-import br.com.lunacom.automatico.amq.producer.ScrapingHistoricoIncidesProducer;
+import br.com.lunacom.automatico.amq.producer.ScrapingHistoricoIndicesProducer;
 import br.com.lunacom.automatico.domain.entity.Agenda;
 import br.com.lunacom.automatico.domain.entity.Ativo;
 import br.com.lunacom.automatico.domain.message.SolicitacaoScrapingDto;
@@ -30,7 +30,7 @@ public class AgendamentoService {
     private final AgendaRepository repository;
     private final AtivoRepository ativoRepository;
     private final DataUtil dataUtil;
-    private final ScrapingHistoricoIncidesProducer producer;
+    private final ScrapingHistoricoIndicesProducer producer;
 
 
     public void dispararBuscaDadosCotacoes() {

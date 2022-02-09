@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ScrapingHistoricoIncidesProducer {
+public class ScrapingHistoricoIndicesProducer {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
