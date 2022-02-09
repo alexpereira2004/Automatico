@@ -16,7 +16,7 @@ public class ScrapingHistoricoIncidesProducer {
     @Value("${rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${rabbitmq.routingkey}")
+    @Value("${rabbitmq.routingkey.solicitacao}")
     private String routingkey;
 
     public void produce(SolicitacaoScrapingDto data){

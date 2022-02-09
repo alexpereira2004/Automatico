@@ -22,8 +22,11 @@ public class RabbitMQProducerConfig {
     @Value("${rabbitmq.exchange}")
     String exchange;
 
-    @Value("${rabbitmq.routingkey}")
-    private String routingkey;
+    @Value("${rabbitmq.routingkey.solicitacao}")
+    private String routingKeySolicitacao;
+
+    @Value("${rabbitmq.routingkey.concluido}")
+    private String routingKeyConclusao;
 
     @Bean("exchangeCreate")
     public DirectExchange exchange() {
@@ -37,7 +40,7 @@ public class RabbitMQProducerConfig {
 
     @Bean
     public Binding bindingInput(@Qualifier("resultadoScrapingQueue") Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingkey);
+        return BindingBuilder.bind(queue).to(exchange).with(routingKeyConclusao);
     }
 
     @Bean
@@ -47,6 +50,6 @@ public class RabbitMQProducerConfig {
 
     @Bean
     public Binding bindingOutput(@Qualifier("solicitacaoScrapingQueue") Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingkey);
+        return BindingBuilder.bind(queue).to(exchange).with(routingKeySolicitacao);
     }
 }
