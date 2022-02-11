@@ -21,6 +21,7 @@ public class Ativo implements Serializable {
     @Id
     private String codigo;
     private String nome;
+//    @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime ultimaAtualizacao;
     @Column(length=1)
     private String seguindo;
