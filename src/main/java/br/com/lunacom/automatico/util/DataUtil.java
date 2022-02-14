@@ -55,6 +55,10 @@ public class DataUtil {
         return LocalDate.now();
     }
 
+    public static LocalDateTime dataHoraAgora() {
+        return LocalDateTime.now();
+    }
+
     public LocalDateTime dataHoraAora() {
         return LocalDateTime.now();
     }

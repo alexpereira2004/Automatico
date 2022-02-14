@@ -37,28 +37,28 @@ public class AgendamentoService {
         List<Ativo> list = ativoRepository.findAllBySeguindo(SeguindoEnum.SIM.getCodigo());
         List<Ativo> ativosSemDadosNoDia = list.stream()
                 .filter(ativo ->Objects.isNull(ativo.getUltimaAtualizacao())
-                        || ativo.getUltimaAtualizacao().toLocalDate().equals(DataUtil.dataAgora()))
+                        || ativo.getUltimaAtualizacao().toLocalDate().isBefore(DataUtil.dataAgora()))
                 .collect(Collectors.toList());
 
         ativosSemDadosNoDia.forEach(a -> producer.produce(new SolicitacaoScrapingDto(a.getCodigo())));
     }
 
     public LocalDateTime definirTempoParaProximoDisparo(Optional<Date> lastCompletionTime) {
-        LocalDateTime ultimaExecucao = parseDataUltimaExecucao(lastCompletionTime);
-        Agenda agenda = getAgendaNoBancoDeDados();
+        final Date ultimaExecucao = lastCompletionTime.orElse(null);
+        final Agenda agenda = getAgendaNoBancoDeDados();
         LocalDateTime proximaExecucaoCalculada = calcularProximaExecucao(ultimaExecucao, agenda);
+        final LocalDateTime ultimaExecucaoLocalDateTime = Objects.isNull(ultimaExecucao)
+                ? DataUtil.dataHoraAgora() : parseDateToLocalTime(ultimaExecucao);
         proximaExecucaoCalculada = garantirQueProximaExecucaoRespeiteAgenda
-                (ultimaExecucao, agenda, proximaExecucaoCalculada);
+                (ultimaExecucaoLocalDateTime, agenda, proximaExecucaoCalculada);
         return proximaExecucaoCalculada;
     }
 
-    private LocalDateTime parseDataUltimaExecucao(Optional<Date> lastCompletionTime) {
-        Date date = lastCompletionTime.orElseGet(Date::new);
+    private LocalDateTime parseDateToLocalTime(Date date) {
 
-        LocalDateTime ultimaExecucao = date
+        return date
                 .toInstant().atZone(ZoneId.of("America/Sao_Paulo"))
                 .toLocalDateTime();
-        return ultimaExecucao;
     }
 
     private Agenda getAgendaNoBancoDeDados() {
@@ -67,8 +67,13 @@ public class AgendamentoService {
         return agenda;
     }
 
-    private LocalDateTime calcularProximaExecucao(LocalDateTime ultimaExecucao, Agenda agenda) {
-        LocalDateTime proximaExecucaoCalculada = ultimaExecucao.plusMinutes(agenda.getPeriodicidade());
+    private LocalDateTime calcularProximaExecucao(Date ultimaExecucao, Agenda agenda) {
+        LocalDateTime proximaExecucaoCalculada = null;
+        if (Objects.isNull(ultimaExecucao)) {
+            proximaExecucaoCalculada = DataUtil.dataHoraAgora().plusMinutes(1L);
+        } else {
+            proximaExecucaoCalculada = parseDateToLocalTime(ultimaExecucao).plusMinutes(agenda.getPeriodicidade());
+        }
         return proximaExecucaoCalculada;
     }
 
